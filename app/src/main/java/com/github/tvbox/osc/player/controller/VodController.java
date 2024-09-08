@@ -565,6 +565,39 @@ public class VodController extends BaseController {
                 return true;
             }
         });
+        //处理上下键，调整跳过开头时间，每按一下增减5秒
+        mPlayerTimeStartBtn.setOnKeyListener(new OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+                try {
+                    //跳过开头秒数
+                    int st =0;
+                    switch (keyEvent.getKeyCode()) {
+                        case KeyEvent.KEYCODE_DPAD_UP:
+                            // 处理向上按键事件
+                            st = mPlayerConfig.getInt("st") + 5;
+                            if(st > 300){//设置最大300秒
+                                st = 300;
+                            }
+                            mPlayerConfig.put("st", st );
+                            updatePlayerCfgView();
+                            return true; // 返回 true 表示事件已处理
+                        case KeyEvent.KEYCODE_DPAD_DOWN:
+                            // 处理向下按键事件
+                            st = mPlayerConfig.getInt("st") -5;
+                            if(st < 0){//设置最小0秒
+                                st = 0;
+                            }
+                            mPlayerConfig.put("st", st );
+                            updatePlayerCfgView();
+                            return true; // 返回 true 表示事件已处理
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                return false;
+            }
+        });
         mPlayerTimeSkipBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -593,6 +626,39 @@ public class VodController extends BaseController {
                     e.printStackTrace();
                 }
                 return true;
+            }
+        });
+        //处理上下键，调整跳过结尾时间，每按一下增减5秒
+        mPlayerTimeSkipBtn.setOnKeyListener(new OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+                try {
+                    //跳过结尾秒数
+                    int et =0;
+                    switch (keyEvent.getKeyCode()) {
+                        case KeyEvent.KEYCODE_DPAD_UP:
+                            // 处理向上按键事件
+                            et = mPlayerConfig.getInt("et") + 5;
+                            if(et > 300){//设置最大300秒
+                                et = 300;
+                            }
+                            mPlayerConfig.put("et", et );
+                            updatePlayerCfgView();
+                            return true; // 返回 true 表示事件已处理
+                        case KeyEvent.KEYCODE_DPAD_DOWN:
+                            // 处理向下按键事件
+                            et = mPlayerConfig.getInt("et") -5;
+                            if(et < 0){//设置最小0秒
+                                et = 0;
+                            }
+                            mPlayerConfig.put("et", et );
+                            updatePlayerCfgView();
+                            return true; // 返回 true 表示事件已处理
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                return false;
             }
         });
         mZimuBtn.setOnClickListener(new OnClickListener() {
