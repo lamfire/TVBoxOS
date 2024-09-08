@@ -4,13 +4,18 @@ buildscript {
         gradlePluginPortal()
         google()
         mavenCentral()
-        maven { url "https://jitpack.io" }
-        //maven { url 'https://download.01.org/crosswalk/releases/crosswalk/android/maven2' }
-        maven { url 'http://home.jundie.top:81/xwalk/maven2' }
-//        maven { url 'http://9xi4o.tk/maven2' }
+        maven { url 'https://jitpack.io' }
+        maven {
+            url "http://maven.aliyun.com/nexus/content/groups/public"
+            allowInsecureProtocol true
+        }
+        maven { url 'https://download.01.org/crosswalk/releases/crosswalk/android/maven2' }
+        //maven { url 'http://home.jundie.top:81/xwalk/maven2' }
+        //maven { url 'http://9xi4o.tk/maven2' }
+
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:4.2.2"
+        classpath 'com.android.tools.build:gradle:8.6.0'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -22,10 +27,12 @@ allprojects {
         gradlePluginPortal()
         google()
         mavenCentral()
-        maven { url "https://jitpack.io" }
-        //maven { url 'https://download.01.org/crosswalk/releases/crosswalk/android/maven2' }
-//        maven { url 'http://9xi4o.tk/maven2' }
-        maven { url 'http://home.jundie.top:81/xwalk/maven2' }
+        maven { url 'https://jitpack.io' }
+        maven {
+            url "http://maven.aliyun.com/nexus/content/groups/public"
+            allowInsecureProtocol true
+        }
+        maven { url 'https://download.01.org/crosswalk/releases/crosswalk/android/maven2' }
     }
 }
 

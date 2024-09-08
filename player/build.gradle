@@ -3,13 +3,11 @@ plugins {
 }
 
 android {
-    compileSdkVersion 30
-
+    namespace 'com.github.tvbox.osc.player' // 替换为你的命名空间
+    compileSdkVersion 35
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 26
-        versionCode 1
-        versionName "1.0"
+        targetSdkVersion 35
     }
 
     buildTypes {
@@ -27,9 +25,14 @@ android {
         releaseSimon {
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    tasks.withType(JavaCompile) {
+        options.compilerArgs << "-Xlint:deprecation"
     }
 }
 
@@ -43,3 +46,4 @@ dependencies {
     api "com.google.android.exoplayer:extension-okhttp:2.14.2"
     api 'xyz.doikki.android.dkplayer:dkplayer-ui:3.3.5'
 }
+
