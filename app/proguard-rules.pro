@@ -17,7 +17,7 @@
 -keepattributes Signature
 -keepattributes LineNumberTable
 -renamesourcefileattribute SourceFile
-
+-keep class org.xmlpull.** { *; }
 # 重新包装所有重命名的包并放在给定的单一包中
 -flattenpackagehierarchy androidx.base
 
@@ -57,9 +57,9 @@
 -dontwarn androidx.**
 -keep class androidx.** { *; }
 -keep interface androidx.** { *; }
-#-keep public class * extends androidx.**
+-keep public class * extends androidx.**
 
--keep class org.xmlpull.v1.** {*;}
+-keep class org.xmlpull.** {*;}
 
 # 保留R下面的资源
 -keep class **.R$* {*;}
