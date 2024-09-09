@@ -569,6 +569,10 @@ public class VodController extends BaseController {
         mPlayerTimeStartBtn.setOnKeyListener(new OnKeyListener() {
             @Override
             public boolean onKey(View view, int i, KeyEvent keyEvent) {
+                //判断是不是按下，不是则跳过
+                if (keyEvent.getAction() != KeyEvent.ACTION_DOWN) {
+                    return false;
+                }
                 try {
                     //跳过开头秒数
                     int st =0;
@@ -632,6 +636,10 @@ public class VodController extends BaseController {
         mPlayerTimeSkipBtn.setOnKeyListener(new OnKeyListener() {
             @Override
             public boolean onKey(View view, int i, KeyEvent keyEvent) {
+                //判断是不是按下，不是则跳过
+                if (keyEvent.getAction() != KeyEvent.ACTION_DOWN) {
+                    return false;
+                }
                 try {
                     //跳过结尾秒数
                     int et =0;
