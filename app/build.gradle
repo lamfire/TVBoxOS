@@ -34,11 +34,19 @@ android {
         }
         release {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            minifyEnabled true
+            minifyEnabled false
 
             ndk {
                 abiFilters 'armeabi-v7a'
             }
+        }
+    }
+
+    applicationVariants.configureEach { variant ->
+        variant.outputs.configureEach { output ->
+            // 构建自定义文件名
+            def fileName = "tvbox-${variant.buildType.name}-${android.defaultConfig.versionName}.apk"
+            outputFileName = fileName
         }
     }
 
@@ -87,6 +95,9 @@ dependencies {
     implementation 'com.googlecode.juniversalchardet:juniversalchardet:1.0.3'
 
 
-    implementation 'com.thoughtworks.xstream:xstream:1.4.20'
+    implementation('com.thoughtworks.xstream:xstream:1.4.20') {
+        exclude group: 'xmlpull', module: 'xmlpull'
+    }
+
 
 }
