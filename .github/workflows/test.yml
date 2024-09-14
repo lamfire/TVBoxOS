@@ -55,3 +55,5 @@ jobs:
           asset_path: ${{ github.workspace }}/apk/tvbox-release.apk  # 根据您的构建产物路径进行调整
           asset_name: tvbox-release.apk  # 根据需要命名
           asset_content_type: application/vnd.android.package-archive
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
