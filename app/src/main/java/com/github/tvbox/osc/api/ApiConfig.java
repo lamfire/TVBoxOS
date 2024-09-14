@@ -19,6 +19,7 @@ import com.github.tvbox.osc.util.AES;
 import com.github.tvbox.osc.util.AdBlocker;
 import com.github.tvbox.osc.util.DefaultConfig;
 import com.github.tvbox.osc.util.HawkConfig;
+import com.github.tvbox.osc.util.LOG;
 import com.github.tvbox.osc.util.MD5;
 import com.github.tvbox.osc.util.VideoParseRuler;
 import com.google.gson.Gson;
@@ -136,7 +137,7 @@ public class ApiConfig {
         if (useCache && cache.exists()) {
             try {
                 parseJson(apiUrl, cache);
-                callback.success();
+                callback.success("加载缓存配置成功");
                 return;
             } catch (Throwable th) {
                 th.printStackTrace();
@@ -183,7 +184,7 @@ public class ApiConfig {
                             } catch (Throwable th) {
                                 th.printStackTrace();
                             }
-                            callback.success();
+                            callback.success("解析远程配置成功");
                         } catch (Throwable th) {
                             th.printStackTrace();
                             callback.error("解析配置失败");
@@ -196,7 +197,7 @@ public class ApiConfig {
                         if (cache.exists()) {
                             try {
                                 parseJson(apiUrl, cache);
-                                callback.success();
+                                callback.success("重新加载缓存配置成功");
                                 return;
                             } catch (Throwable th) {
                                 th.printStackTrace();
@@ -229,18 +230,24 @@ public class ApiConfig {
         String jarUrl = urls[0];
         String md5 = urls.length > 1 ? urls[1].trim() : "";
         File cache = new File(App.getInstance().getFilesDir().getAbsolutePath() + "/csp.jar");
+        LOG.e("md5: " + md5);
 
         if (!md5.isEmpty() || useCache) {
-            if (cache.exists() && (useCache || MD5.getFileMd5(cache).equalsIgnoreCase(md5))) {
-                if (jarLoader.load(cache.getAbsolutePath())) {
-                    callback.success();
-                } else {
-                    callback.error("");
+            if (cache.exists() ) {
+                String cacheMd5 = MD5.getFileMd5(cache);
+                LOG.e("cache_md5: " + cacheMd5);
+                if (cacheMd5.equalsIgnoreCase(md5)){
+                    if (jarLoader.load(cache.getAbsolutePath())) {
+                        callback.success("加载本地缓存jar成功");
+                    } else {
+                        callback.error("加载本地缓存jar失败!");
+                    }
                 }
                 return;
             }
         }
 
+        LOG.e("从远程下载jar: " + jarUrl);
         boolean isJarInImg = jarUrl.startsWith("img+");
         jarUrl = jarUrl.replace("img+", "");
         OkGo.<File>get(jarUrl)
@@ -272,12 +279,12 @@ public class ApiConfig {
             public void onSuccess(Response<File> response) {
                 if (response.body().exists()) {
                     if (jarLoader.load(response.body().getAbsolutePath())) {
-                        callback.success();
+                        callback.success("加载远程jar成功");
                     } else {
-                        callback.error("");
+                        callback.error("加载远程jar失败");
                     }
                 } else {
-                    callback.error("");
+                    callback.error("远程jar不存在");
                 }
             }
 
@@ -290,7 +297,7 @@ public class ApiConfig {
     }
 
     private void parseJson(String apiUrl, File f) throws Throwable {
-        System.out.println("从本地缓存加载" + f.getAbsolutePath());
+        LOG.e("从本地缓存加载" + f.getAbsolutePath());
         BufferedReader bReader = new BufferedReader(new InputStreamReader(new FileInputStream(f), "UTF-8"));
         StringBuilder sb = new StringBuilder();
         String s = "";
@@ -599,7 +606,7 @@ public class ApiConfig {
     }
 
     public interface LoadConfigCallback {
-        void success();
+        void success(String msg);
 
         void retry();
 

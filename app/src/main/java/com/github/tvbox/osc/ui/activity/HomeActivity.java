@@ -266,49 +266,67 @@ public class HomeActivity extends BaseActivity {
             showLoading();
             sourceViewModel.getSort(ApiConfig.get().getHomeSourceBean().getKey());
             if (hasPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                LOG.e("有");
+                LOG.e("有:WRITE_EXTERNAL_STORAGE");
             } else {
-                LOG.e("无");
-            }
-            return;
-        }
-        showLoading();
-        if (dataInitOk && !jarInitOk) {
-            if (!ApiConfig.get().getSpider().isEmpty()) {
-                ApiConfig.get().loadJar(useCacheConfig, ApiConfig.get().getSpider(), new ApiConfig.LoadConfigCallback() {
+                LOG.e("无:WRITE_EXTERNAL_STORAGE");
+                mHandler.post(new Runnable() {
                     @Override
-                    public void success() {
-                        jarInitOk = true;
-                        mHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (!useCacheConfig)
-                                    Toast.makeText(HomeActivity.this, "自定义jar加载成功", Toast.LENGTH_SHORT).show();
-                                initData();
-                            }
-                        }, 50);
-                    }
-
-                    @Override
-                    public void retry() {
-
-                    }
-
-                    @Override
-                    public void error(String msg) {
-                        jarInitOk = true;
-                        mHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(HomeActivity.this, "jar加载失败", Toast.LENGTH_SHORT).show();
-                                initData();
-                            }
-                        });
+                    public void run() {
+                        Toast.makeText(HomeActivity.this, "警告:未获得存储权限,请设置.", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
             return;
         }
+        showLoading();
+        loadConfig();
+        loadJar();
+    }
+
+    private void loadJar(){
+        if(jarInitOk || !dataInitOk)return;
+
+        LOG.i("loadJar");
+        if (!ApiConfig.get().getSpider().isEmpty()) {
+            ApiConfig.get().loadJar(useCacheConfig, ApiConfig.get().getSpider(), new ApiConfig.LoadConfigCallback() {
+                @Override
+                public void success(String msg) {
+                    jarInitOk = true;
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (!useCacheConfig)
+                                Toast.makeText(HomeActivity.this, msg, Toast.LENGTH_SHORT).show();
+                            initData();
+                        }
+                    }, 50);
+                }
+
+                @Override
+                public void retry() {
+
+                }
+
+                @Override
+                public void error(String msg) {
+                    jarInitOk = true;
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(HomeActivity.this, "jar加载失败", Toast.LENGTH_SHORT).show();
+                            initData();
+                        }
+                    });
+                }
+            });
+        }
+    }
+
+    private void loadConfig(){
+        if (dataInitOk){
+            return;
+        }
+        LOG.i("loadConfig");
         ApiConfig.get().loadConfig(useCacheConfig, new ApiConfig.LoadConfigCallback() {
             TipDialog dialog = null;
 
@@ -323,7 +341,7 @@ public class HomeActivity extends BaseActivity {
             }
 
             @Override
-            public void success() {
+            public void success(String msg) {
                 dataInitOk = true;
                 if (ApiConfig.get().getSpider().isEmpty()) {
                     jarInitOk = true;
