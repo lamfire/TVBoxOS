@@ -45,7 +45,7 @@ android {
     applicationVariants.configureEach { variant ->
         variant.outputs.configureEach { output ->
             // 构建自定义文件名
-            def fileName = "tvbox-${variant.buildType.name}-${android.defaultConfig.versionName}.apk"
+            def fileName = "tvbox-${variant.buildType.name}.apk"
             outputFileName = fileName
         }
     }
