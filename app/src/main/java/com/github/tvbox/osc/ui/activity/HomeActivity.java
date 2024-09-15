@@ -484,8 +484,7 @@ public class HomeActivity extends BaseActivity {
             EventBus.getDefault().unregister(this);
             AppManager.getInstance().appExit(0);
             ControlManager.get().stopServer();
-            finish();
-            super.onBackPressed();
+            finishAffinity();
             System.exit(0);
         } else {
             mExitTime = System.currentTimeMillis();
