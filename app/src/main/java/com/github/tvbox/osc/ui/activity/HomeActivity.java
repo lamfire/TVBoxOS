@@ -261,7 +261,6 @@ public class HomeActivity extends BaseActivity {
     private void initData() {
         showLoading();
         loadConfig();
-        loadJar();
     }
 
     private void loadJar(){
@@ -291,7 +290,7 @@ public class HomeActivity extends BaseActivity {
 
                 @Override
                 public void error(String msg) {
-                    jarInitOk = true;
+                    jarInitOk = false;
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
@@ -339,13 +338,12 @@ public class HomeActivity extends BaseActivity {
             @Override
             public void success(String msg) {
                 dataInitOk = true;
-                if (ApiConfig.get().getSpider().isEmpty()) {
-                    jarInitOk = true;
-                }
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        showMainPager();
+                        Toast.makeText(HomeActivity.this, msg +",开始加载jar", Toast.LENGTH_SHORT).show();
+                        loadJar();
+                        //showMainPager();
                     }
                 }, 50);
             }
@@ -357,8 +355,6 @@ public class HomeActivity extends BaseActivity {
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            dataInitOk = true;
-                            jarInitOk = true;
                             showMainPager();
                         }
                     });
@@ -382,8 +378,6 @@ public class HomeActivity extends BaseActivity {
 
                                 @Override
                                 public void right() {
-                                    dataInitOk = true;
-                                    jarInitOk = true;
                                     mHandler.post(new Runnable() {
                                         @Override
                                         public void run() {
@@ -395,8 +389,6 @@ public class HomeActivity extends BaseActivity {
 
                                 @Override
                                 public void cancel() {
-                                    dataInitOk = true;
-                                    jarInitOk = true;
                                     mHandler.post(new Runnable() {
                                         @Override
                                         public void run() {
@@ -494,6 +486,7 @@ public class HomeActivity extends BaseActivity {
             ControlManager.get().stopServer();
             finish();
             super.onBackPressed();
+            System.exit(0);
         } else {
             mExitTime = System.currentTimeMillis();
             Toast.makeText(mContext, "再按一次返回键退出应用", Toast.LENGTH_SHORT).show();            

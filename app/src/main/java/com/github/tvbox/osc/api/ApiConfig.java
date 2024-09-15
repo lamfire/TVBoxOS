@@ -230,20 +230,21 @@ public class ApiConfig {
         String jarUrl = urls[0];
         String md5 = urls.length > 1 ? urls[1].trim() : "";
         File cache = new File(App.getInstance().getFilesDir().getAbsolutePath() + "/csp.jar");
-        LOG.e("md5: " + md5);
+        LOG.e("remote_md5: " + md5);
 
         if (!md5.isEmpty() || useCache) {
             if (cache.exists() ) {
                 String cacheMd5 = MD5.getFileMd5(cache);
                 LOG.e("cache_md5: " + cacheMd5);
                 if (cacheMd5.equalsIgnoreCase(md5)){
+                    LOG.e("use_cache_jar: " + cache.getAbsolutePath());
                     if (jarLoader.load(cache.getAbsolutePath())) {
                         callback.success("加载本地缓存jar成功");
                     } else {
                         callback.error("加载本地缓存jar失败!");
                     }
+                    return;
                 }
-                return;
             }
         }
 
