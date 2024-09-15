@@ -291,7 +291,7 @@ public class ApiConfig {
             @Override
             public void onError(Response<File> response) {
                 super.onError(response);
-                callback.error("");
+                callback.error("加载远程jar出错啦");
             }
         });
     }

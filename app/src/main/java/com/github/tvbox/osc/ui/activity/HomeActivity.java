@@ -259,25 +259,6 @@ public class HomeActivity extends BaseActivity {
     private boolean jarInitOk = false;
 
     private void initData() {
-        SourceBean home = ApiConfig.get().getHomeSourceBean();
-        if (home != null && home.getName() != null && !home.getName().isEmpty())
-            tvName.setText(home.getName());
-        if (dataInitOk && jarInitOk) {
-            showLoading();
-            sourceViewModel.getSort(ApiConfig.get().getHomeSourceBean().getKey());
-            if (hasPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                LOG.e("有:WRITE_EXTERNAL_STORAGE");
-            } else {
-                LOG.e("无:WRITE_EXTERNAL_STORAGE");
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(HomeActivity.this, "警告:未获得存储权限,请设置.", Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-            return;
-        }
         showLoading();
         loadConfig();
         loadJar();
@@ -295,9 +276,10 @@ public class HomeActivity extends BaseActivity {
                     mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            if (!useCacheConfig)
+                            if (!useCacheConfig) {
                                 Toast.makeText(HomeActivity.this, msg, Toast.LENGTH_SHORT).show();
-                            initData();
+                            }
+                            showMainPager();
                         }
                     }, 50);
                 }
@@ -313,8 +295,9 @@ public class HomeActivity extends BaseActivity {
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(HomeActivity.this, "jar加载失败", Toast.LENGTH_SHORT).show();
-                            initData();
+                            Toast.makeText(HomeActivity.this, "失败:" +msg, Toast.LENGTH_SHORT).show();
+                            //initData();
+                            showMainPager();
                         }
                     });
                 }
@@ -326,6 +309,19 @@ public class HomeActivity extends BaseActivity {
         if (dataInitOk){
             return;
         }
+        //检查存储权限
+        if (hasPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            LOG.e("有:WRITE_EXTERNAL_STORAGE");
+        } else {
+            LOG.e("无:WRITE_EXTERNAL_STORAGE");
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(HomeActivity.this, "警告:未获得存储权限,请设置.", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
         LOG.i("loadConfig");
         ApiConfig.get().loadConfig(useCacheConfig, new ApiConfig.LoadConfigCallback() {
             TipDialog dialog = null;
@@ -349,20 +345,21 @@ public class HomeActivity extends BaseActivity {
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        initData();
+                        showMainPager();
                     }
                 }, 50);
             }
 
             @Override
             public void error(String msg) {
+                //-1表示未配置远程json文件地址
                 if (msg.equalsIgnoreCase("-1")) {
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
                             dataInitOk = true;
                             jarInitOk = true;
-                            initData();
+                            showMainPager();
                         }
                     });
                     return;
@@ -390,7 +387,7 @@ public class HomeActivity extends BaseActivity {
                                     mHandler.post(new Runnable() {
                                         @Override
                                         public void run() {
-                                            initData();
+                                            showMainPager();
                                             dialog.hide();
                                         }
                                     });
@@ -403,7 +400,7 @@ public class HomeActivity extends BaseActivity {
                                     mHandler.post(new Runnable() {
                                         @Override
                                         public void run() {
-                                            initData();
+                                            showMainPager();
                                             dialog.hide();
                                         }
                                     });
@@ -415,6 +412,14 @@ public class HomeActivity extends BaseActivity {
                 });
             }
         }, this);
+    }
+
+    private void showMainPager(){
+        SourceBean home = ApiConfig.get().getHomeSourceBean();
+        if (home != null && home.getName() != null && !home.getName().isEmpty()) {
+            tvName.setText(home.getName());
+        }
+        sourceViewModel.getSort(ApiConfig.get().getHomeSourceBean().getKey());
     }
 
     private void initViewPager(AbsSortXml absXml) {
