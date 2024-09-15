@@ -20,6 +20,7 @@ import com.github.tvbox.osc.R;
 import com.github.tvbox.osc.callback.EmptyCallback;
 import com.github.tvbox.osc.callback.LoadingCallback;
 import com.github.tvbox.osc.util.AppManager;
+import com.github.tvbox.osc.util.LOG;
 import com.kingja.loadsir.callback.Callback;
 import com.kingja.loadsir.core.LoadService;
 import com.kingja.loadsir.core.LoadSir;
@@ -47,6 +48,12 @@ public abstract class BaseActivity extends AppCompatActivity implements CustomAd
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         try {
+            // 设置全局未捕获异常处理器
+            Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> {
+                LOG.e("TAG", "Uncaught exception: " + throwable.getMessage());
+                throwable.printStackTrace();
+                // 这里可以执行一些清理操作或重启应用
+            });
             if (screenRatio < 0) {
                 DisplayMetrics dm = new DisplayMetrics();
                 getWindowManager().getDefaultDisplay().getMetrics(dm);

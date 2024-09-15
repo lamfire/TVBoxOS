@@ -29,8 +29,9 @@ public class XWalkUtils {
     }
 
     public static String downUrl() {
-//        return String.format("https://download.01.org/crosswalk/releases/crosswalk/android/stable/23.53.589.4/%s/crosswalk-apks-23.53.589.4-%s.zip", getRuntimeAbi(), getRuntimeAbi());
-        return String.format("http://home.jundie.top:81/xwalk/maven2/crosswalk-apks-23.53.589.4-%s.zip", getRuntimeAbi());
+        //return String.format("https://download.01.org/crosswalk/releases/crosswalk/android/stable/23.53.589.4/%s/crosswalk-apks-23.53.589.4-%s.zip", getRuntimeAbi(), getRuntimeAbi());
+        //return String.format("http://home.jundie.top:81/xwalk/maven2/crosswalk-apks-23.53.589.4-%s.zip", getRuntimeAbi());
+        return String.format("https://github.com/o0HalfLife0o/crosswalk/raw/master/releases/crosswalk/android/stable/23.53.589.4/%s/crosswalk-apks-23.53.589.4-%s.zip", getRuntimeAbi(), getRuntimeAbi());
     }
 
     public static String saveZipFile() {
@@ -179,7 +180,10 @@ public class XWalkUtils {
                     break;
                 }
             }
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+        }
+        catch (Throwable e) {
             e.printStackTrace();
         }
         return result;
