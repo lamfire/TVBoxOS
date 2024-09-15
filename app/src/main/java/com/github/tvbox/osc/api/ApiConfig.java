@@ -239,11 +239,10 @@ public class ApiConfig {
                 if (cacheMd5.equalsIgnoreCase(md5)){
                     LOG.e("use_cache_jar: " + cache.getAbsolutePath());
                     if (jarLoader.load(cache.getAbsolutePath())) {
-                        callback.success("加载本地缓存jar成功");
-                    } else {
-                        callback.error("加载本地缓存jar失败!");
+                        callback.success("加载缓存jar成功");
+                        return;
                     }
-                    return;
+
                 }
             }
         }
