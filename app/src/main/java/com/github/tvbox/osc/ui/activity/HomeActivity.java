@@ -341,7 +341,7 @@ public class HomeActivity extends BaseActivity {
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(HomeActivity.this, msg +",开始加载jar", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(HomeActivity.this, msg, Toast.LENGTH_SHORT).show();
                         loadJar();
                         //showMainPager();
                     }
