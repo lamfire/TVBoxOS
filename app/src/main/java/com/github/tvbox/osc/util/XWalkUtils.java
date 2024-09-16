@@ -154,10 +154,6 @@ public class XWalkUtils {
             }
         }
         zf.close();
-        File zipFile = new File(archive);
-        if (zipFile.exists() && zipFile.getName().endsWith(".zip")) {
-            zipFile.delete();
-        }
     }
 
     public static String getRuntimeAbi() {
@@ -203,6 +199,13 @@ public class XWalkUtils {
 
     static String apkPath(Context context) {
         return context.getCacheDir().getAbsolutePath() + "/XWalkRuntimeLib.apk";
+    }
+
+    public static void deleteZipFile(String file){
+        File zipFile = new File(file);
+        if (zipFile.exists() && zipFile.getName().endsWith(".zip")) {
+            zipFile.delete();
+        }
     }
 
     static String libExtractPath(Context context) {

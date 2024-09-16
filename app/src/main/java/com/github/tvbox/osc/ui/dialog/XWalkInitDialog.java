@@ -61,6 +61,7 @@ public class XWalkInitDialog extends BaseDialog {
                         try {
                             XWalkUtils.unzipXWalkZip(context, response.body().getAbsolutePath());
                             XWalkUtils.extractXWalkLib(context);
+                            XWalkUtils.deleteZipFile(response.body().getAbsolutePath());
                             downText.setText("重新下载");
                             if (listener != null)
                                 listener.onchange();
