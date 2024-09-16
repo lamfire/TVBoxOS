@@ -43,6 +43,7 @@ public class XWalkInitDialog extends BaseDialog {
         downTip.setText("下载XWalkView运行组件\nArch:" + XWalkUtils.getRuntimeAbi());
 
         if (XWalkUtils.xWalkLibExist(context)) {
+            downTip.setText("已安装XWalkView运行组件\nArch:" + XWalkUtils.getRuntimeAbi());
             downText.setText("重新下载");
         }else if(XWalkUtils.isXWalkZipExistsOnExternal(context)){
             downTip.setText("发现本地存储XWalkView运行组件\nArch:" + XWalkUtils.getRuntimeAbi());
