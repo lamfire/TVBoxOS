@@ -136,12 +136,12 @@ public class ModelSettingFragment extends BaseLazyFragment {
         //如果存在sdcard的zip文件，则解开
         if(!XWalkUtils.xWalkLibExist(mContext) && XWalkUtils.isXWalkZipExistsOnExternal(mContext)) {
             Toast.makeText(mContext, "发现XWalk文件，正在解包...", Toast.LENGTH_LONG).show();
-            mHandler.post(new Runnable() {
+            new Thread(new Runnable() {
                 @Override
                 public void run() {
                     XWalkUtils.extractXWalkZipOnExternal(mContext);
                 }
-            });
+            }).start();
         }
 
         findViewById(R.id.llParseWebVew).setOnClickListener(new View.OnClickListener() {
