@@ -58,7 +58,6 @@ public class XWalkInitDialog extends BaseDialog {
                 if("重新下载".contentEquals(downText.getText())) {
                     downloadAndSetup(context);
                 }else if("本地安装".contentEquals(downText.getText())){
-                    downText.setText("正在安装");
                     externalStoreSetup(context);
                     downText.setText("安装完成");
                 }
