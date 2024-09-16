@@ -228,12 +228,23 @@ public class XWalkUtils {
         }
     }
 
-    public static void extractOnExternal(Context context){
+    public static void extractXWalkZipOnExternal(Context context){
         String[] dirs = new String[]{"/sdcard","/mnt/usb/sda1"};
         for(String dir : dirs) {
             File zipFile = new File(dir, XWalkUtils.saveZipFile());
             extractXWalkZip(context, zipFile);
         }
+    }
+
+    public static boolean isXWalkZipExistsOnExternal(Context context){
+        String[] dirs = new String[]{"/sdcard","/mnt/usb/sda1"};
+        for(String dir : dirs) {
+            File zipFile = new File(dir, XWalkUtils.saveZipFile());
+            if(zipFile.exists()){
+                return true;
+            }
+        }
+        return false;
     }
 
 }

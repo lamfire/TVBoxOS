@@ -132,6 +132,18 @@ public class ModelSettingFragment extends BaseLazyFragment {
                 tvDebugOpen.setText(Hawk.get(HawkConfig.DEBUG_OPEN, false) ? "已打开" : "已关闭");
             }
         });
+
+        //如果存在sdcard的zip文件，则解开
+        if(!XWalkUtils.xWalkLibExist(mContext) && XWalkUtils.isXWalkZipExistsOnExternal(mContext)) {
+            Toast.makeText(mContext, "发现XWalk文件，正在解包...", Toast.LENGTH_LONG).show();
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    XWalkUtils.extractXWalkZipOnExternal(mContext);
+                }
+            });
+        }
+
         findViewById(R.id.llParseWebVew).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -140,15 +152,9 @@ public class ModelSettingFragment extends BaseLazyFragment {
                 Hawk.put(HawkConfig.PARSE_WEBVIEW, useSystem);
                 tvParseWebView.setText(Hawk.get(HawkConfig.PARSE_WEBVIEW, true) ? "系统自带" : "XWalkView");
                 if (!useSystem) {
-                    Toast.makeText(mContext, "注意: XWalkView只适用于部分低Android版本，Android5.0以上推荐使用系统自带", Toast.LENGTH_LONG).show();
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            //如果存在sdcard的zip文件，则解开
-                            if(!XWalkUtils.xWalkLibExist(mContext)) {
-                                XWalkUtils.extractOnExternal(mContext);
-                            }
-
                             XWalkInitDialog dialog = new XWalkInitDialog(mContext);
                             dialog.setOnListener(new XWalkInitDialog.OnListener() {
                                 @Override

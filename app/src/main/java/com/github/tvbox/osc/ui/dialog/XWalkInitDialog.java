@@ -38,7 +38,7 @@ public class XWalkInitDialog extends BaseDialog {
         TextView downText = findViewById(R.id.downXWalk);
         TextView downTip = findViewById(R.id.downXWalkArch);
 
-        downTip.setText("下载XWalkView运行组件\nArch:" + XWalkUtils.getRuntimeAbi());
+        downTip.setText("注意: XWalkView只适用于部分低Android版本，Android5.0以上推荐使用系统自带。\n下载XWalkView运行组件\nArch:" + XWalkUtils.getRuntimeAbi());
 
         if (XWalkUtils.xWalkLibExist(context)) {
             downText.setText("重新下载");
