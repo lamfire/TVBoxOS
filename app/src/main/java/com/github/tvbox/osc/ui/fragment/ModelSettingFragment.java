@@ -2,6 +2,7 @@ package com.github.tvbox.osc.ui.fragment;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -133,17 +134,6 @@ public class ModelSettingFragment extends BaseLazyFragment {
             }
         });
 
-        //如果存在sdcard的zip文件，则解开
-        if(!XWalkUtils.xWalkLibExist(mContext) && XWalkUtils.isXWalkZipExistsOnExternal(mContext)) {
-            Toast.makeText(mContext, "发现XWalk文件，正在解包...", Toast.LENGTH_LONG).show();
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    XWalkUtils.extractXWalkZipOnExternal(mContext);
-                }
-            }).start();
-        }
-
         findViewById(R.id.llParseWebVew).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -152,6 +142,8 @@ public class ModelSettingFragment extends BaseLazyFragment {
                 Hawk.put(HawkConfig.PARSE_WEBVIEW, useSystem);
                 tvParseWebView.setText(Hawk.get(HawkConfig.PARSE_WEBVIEW, true) ? "系统自带" : "XWalkView");
                 if (!useSystem) {
+                    //注意: XWalkView只适用于部分低Android版本，Android5.0以上推荐使用系统自带。
+                    Toast.makeText(mContext, "注意: XWalkView只适用于部分低Android版本，Android5.0以上推荐使用系统自带。", Toast.LENGTH_LONG).show();
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {

@@ -23,6 +23,8 @@ import java.io.File;
 
 public class XWalkInitDialog extends BaseDialog {
     private OnListener listener;
+    TextView downText;
+    TextView downTip;
 
     public XWalkInitDialog(@NonNull @NotNull Context context) {
         super(context);
@@ -35,59 +37,79 @@ public class XWalkInitDialog extends BaseDialog {
                 OkGo.getInstance().cancelTag("down_xwalk");
             }
         });
-        TextView downText = findViewById(R.id.downXWalk);
-        TextView downTip = findViewById(R.id.downXWalkArch);
+        downText = findViewById(R.id.downXWalk);
+        downTip = findViewById(R.id.downXWalkArch);
 
-        downTip.setText("注意: XWalkView只适用于部分低Android版本，Android5.0以上推荐使用系统自带。\n下载XWalkView运行组件\nArch:" + XWalkUtils.getRuntimeAbi());
+        downTip.setText("下载XWalkView运行组件\nArch:" + XWalkUtils.getRuntimeAbi());
 
         if (XWalkUtils.xWalkLibExist(context)) {
             downText.setText("重新下载");
+        }else if(XWalkUtils.isXWalkZipExistsOnExternal(context)){
+            downTip.setText("发现本地存储XWalkView运行组件\nArch:" + XWalkUtils.getRuntimeAbi());
+            downText.setText("本地安装");
         }
 
         downText.setOnClickListener(new View.OnClickListener() {
-
-            private void setTextEnable(boolean enable) {
-                downText.setEnabled(enable);
-                downText.setTextColor(enable ? Color.BLACK : Color.GRAY);
-            }
-
             @Override
             public void onClick(View v) {
                 FastClickCheckUtil.check(v);
                 setTextEnable(false);
-                OkGo.<File>get(XWalkUtils.downUrl()).tag("down_xwalk").execute(new FileCallback(context.getCacheDir().getAbsolutePath(), XWalkUtils.saveZipFile()) {
-                    @Override
-                    public void onSuccess(Response<File> response) {
-                        try {
-                            XWalkUtils.unzipXWalkZip(context, response.body().getAbsolutePath());
-                            XWalkUtils.extractXWalkLib(context);
-                            XWalkUtils.deleteZipFile(response.body().getAbsolutePath());
-                            downText.setText("重新下载");
-                            if (listener != null)
-                                listener.onchange();
-                            dismiss();
-                        } catch (Throwable e) {
-                            e.printStackTrace();
-                            Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
-                            setTextEnable(true);
-                        }
-                    }
-
-                    @Override
-                    public void onError(Response<File> response) {
-                        super.onError(response);
-                        Toast.makeText(context, response.getException().getMessage(), Toast.LENGTH_LONG).show();
-                        setTextEnable(true);
-                    }
-
-                    @Override
-                    public void downloadProgress(Progress progress) {
-                        super.downloadProgress(progress);
-                        downText.setText(String.format("%.2f%%", progress.fraction * 100));
-                    }
-                });
+                if("重新下载".contentEquals(downText.getText())) {
+                    downloadAndSetup(context);
+                }else if("本地安装".contentEquals(downText.getText())){
+                    downText.setText("正在安装");
+                    externalStoreSetup(context);
+                    downText.setText("安装完成");
+                }
             }
         });
+    }
+
+    void externalStoreSetup(Context context){
+        //如果存在sdcard的zip文件，则解开
+        if(!XWalkUtils.xWalkLibExist(context) && XWalkUtils.isXWalkZipExistsOnExternal(context)) {
+            Toast.makeText(context, "发现XWalk文件，正在安装...", Toast.LENGTH_LONG).show();
+            XWalkUtils.extractXWalkZipOnExternal(context);
+        }
+    }
+
+    void downloadAndSetup(Context context){
+        OkGo.<File>get(XWalkUtils.downUrl()).tag("down_xwalk").execute(new FileCallback(context.getCacheDir().getAbsolutePath(), XWalkUtils.saveZipFile()) {
+            @Override
+            public void onSuccess(Response<File> response) {
+                try {
+                    XWalkUtils.unzipXWalkZip(context, response.body().getAbsolutePath());
+                    XWalkUtils.extractXWalkLib(context);
+                    XWalkUtils.deleteZipFile(response.body().getAbsolutePath());
+                    downText.setText("重新下载");
+                    if (listener != null)
+                        listener.onchange();
+                    dismiss();
+                } catch (Throwable e) {
+                    e.printStackTrace();
+                    Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+                    setTextEnable(true);
+                }
+            }
+
+            @Override
+            public void onError(Response<File> response) {
+                super.onError(response);
+                Toast.makeText(context, response.getException().getMessage(), Toast.LENGTH_LONG).show();
+                setTextEnable(true);
+            }
+
+            @Override
+            public void downloadProgress(Progress progress) {
+                super.downloadProgress(progress);
+                downText.setText(String.format("%.2f%%", progress.fraction * 100));
+            }
+        });
+    }
+
+    private void setTextEnable(boolean enable) {
+        downText.setEnabled(enable);
+        downText.setTextColor(enable ? Color.BLACK : Color.GRAY);
     }
 
     public XWalkInitDialog setOnListener(OnListener listener) {
