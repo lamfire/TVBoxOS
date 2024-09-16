@@ -287,4 +287,12 @@ public class PlayerHelper {
         else
             return speed > 0?speed + "B/s":"";
     }
+
+    public static String getRootCauseMessage(Throwable th) {
+        for (int i=0; i<10; i++) {
+            if (th.getCause() == null) return th.getLocalizedMessage();
+            else th = th.getCause();
+        }
+        return th.getLocalizedMessage();
+    }
 }
