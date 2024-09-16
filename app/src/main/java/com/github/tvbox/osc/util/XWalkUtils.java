@@ -210,4 +210,27 @@ public class XWalkUtils {
         return context.getDir(/*XWALK_CORE_EXTRACTED_DIR*/"extracted_xwalkcore", Context.MODE_PRIVATE).getAbsolutePath();
     }
 
+    public static void extractXWalkZip(Context context,File zipFile){
+        try {
+            LOG.i("XWalk:" + zipFile.getAbsolutePath() +" - exists=" + zipFile.exists());
+            if(zipFile.exists()) {
+                Toast.makeText(context, "发现本地XWalk文件，正在解包...", Toast.LENGTH_LONG).show();
+                LOG.i("extractXWalkLib:" + zipFile.getAbsolutePath() );
+                XWalkUtils.unzipXWalkZip(context, zipFile.getAbsolutePath());
+                XWalkUtils.extractXWalkLib(context);
+            }
+        }catch (Throwable e){
+            Toast.makeText(context, "解包本地XWalk失败", Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+        }
+    }
+
+    public static void extractOnExternal(Context context){
+        String[] dirs = new String[]{"/sdcard","/mnt/usb/sda1"};
+        for(String dir : dirs) {
+            File zipFile = new File(dir, XWalkUtils.saveZipFile());
+            extractXWalkZip(context, zipFile);
+        }
+    }
+
 }
