@@ -3,6 +3,7 @@ package com.github.tvbox.osc.ui.fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,6 +35,7 @@ import com.github.tvbox.osc.util.HistoryHelper;
 import com.github.tvbox.osc.util.LOG;
 import com.github.tvbox.osc.util.OkGoHelper;
 import com.github.tvbox.osc.util.PlayerHelper;
+import com.github.tvbox.osc.util.XWalkUtils;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.FileCallback;
 import com.lzy.okgo.model.Progress;
@@ -72,6 +74,7 @@ public class ModelSettingFragment extends BaseLazyFragment {
     private TextView tvFastSearchText;
     private TextView tvRecStyleText;
     private TextView tvIjkCachePlay;
+    private Handler mHandler = new Handler();
 
     public static ModelSettingFragment newInstance() {
         return new ModelSettingFragment().setArguments();
@@ -138,13 +141,24 @@ public class ModelSettingFragment extends BaseLazyFragment {
                 tvParseWebView.setText(Hawk.get(HawkConfig.PARSE_WEBVIEW, true) ? "系统自带" : "XWalkView");
                 if (!useSystem) {
                     Toast.makeText(mContext, "注意: XWalkView只适用于部分低Android版本，Android5.0以上推荐使用系统自带", Toast.LENGTH_LONG).show();
-                    XWalkInitDialog dialog = new XWalkInitDialog(mContext);
-                    dialog.setOnListener(new XWalkInitDialog.OnListener() {
+                    mHandler.post(new Runnable() {
                         @Override
-                        public void onchange() {
+                        public void run() {
+                            //如果存在sdcard的zip文件，则解开
+                            if(!XWalkUtils.xWalkLibExist(mContext)) {
+                                XWalkUtils.extractOnExternal(mContext);
+                            }
+
+                            XWalkInitDialog dialog = new XWalkInitDialog(mContext);
+                            dialog.setOnListener(new XWalkInitDialog.OnListener() {
+                                @Override
+                                public void onchange() {
+                                }
+                            });
+                            dialog.show();
                         }
                     });
-                    dialog.show();
+
                 }
             }
         });
