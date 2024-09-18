@@ -19,11 +19,7 @@ public class SplashActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         Intent intent = new Intent(SplashActivity.this, HomeActivity.class);
-<<<<<<< HEAD
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-=======
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
->>>>>>> 4bce3fb68405ae9debfd2999f7cf8cc9f58a70a0
         startActivity(intent);
         finish();
     }
