@@ -278,7 +278,8 @@ public class FastSearchActivity extends BaseActivity {
 
     private void fenci() {
         if (!quickSearchWord.isEmpty()) return; // 如果经有分词了，不再进行二次分词
-        // 分词
+        // 分词接口不可用，直接返回
+        /**
         OkGo.<String>get("http://api.pullword.com/get.php?source=" + URLEncoder.encode(searchTitle) + "&param1=0&param2=0&json=1")
                 .tag("fenci")
                 .execute(new AbsCallback<String>() {
@@ -312,6 +313,7 @@ public class FastSearchActivity extends BaseActivity {
                         super.onError(response);
                     }
                 });
+         **/
     }
 
     private void initData() {
