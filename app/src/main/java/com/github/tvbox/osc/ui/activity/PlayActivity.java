@@ -498,9 +498,10 @@ public class PlayActivity extends BaseActivity {
 
     void playUrl(String url, HashMap<String, String> headers) {
         LOG.i("playUrl:" + url);
+        /**
         if(autoRetryCount>1 && url.contains(".m3u8")){
             url="http://home.jundie.top:666/unBom.php?m3u8="+url;//尝试去bom头再次播放
-        }
+        }**/
         final String finalUrl = url;
         runOnUiThread(new Runnable() {
             @Override
