@@ -71,7 +71,7 @@ public class OkGoHelper {
     public static ArrayList<String> dnsHttpsList = new ArrayList<>();
 
     public static List<ConnectionSpec> getConnectionSpec() {
-        return Util.immutableListOf(RESTRICTED_TLS, MODERN_TLS, COMPATIBLE_TLS, CLEARTEXT);
+        return Util.immutableList(RESTRICTED_TLS, MODERN_TLS, COMPATIBLE_TLS, CLEARTEXT);
     }
 
     public static String getDohUrl(int type) {

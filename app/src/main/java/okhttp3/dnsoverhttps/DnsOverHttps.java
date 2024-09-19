@@ -17,6 +17,8 @@ package okhttp3.dnsoverhttps;
 
 import androidx.annotation.Nullable;
 
+import com.github.tvbox.osc.util.LOG;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -281,7 +283,7 @@ public class DnsOverHttps implements Dns {
 
     private List<InetAddress> readResponse(String hostname, Response response) throws Exception {
         if (response.cacheResponse() == null && response.protocol() != Protocol.HTTP_2) {
-            Platform.get().log("Incorrect protocol: " + response.protocol(),Platform.WARN, null);
+            LOG.i("Incorrect protocol: " + response.protocol());
         }
 
         try {

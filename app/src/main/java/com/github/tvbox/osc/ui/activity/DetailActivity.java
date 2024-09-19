@@ -599,7 +599,7 @@ public class DetailActivity extends BaseActivity {
             Document document = Jsoup.parse(info);
             // 获取纯文本内容
             return document.body().text();
-        }catch (Exception e){
+        }catch (Throwable e){
             e.printStackTrace();
         }
         return info.replaceAll("<[^>]+>", "");
