@@ -162,6 +162,8 @@ public class ApiConfig {
         } else {
             configUrl = apiUrl;
         }
+
+        LOG.e("从远程加载配置: " + configUrl);
         String configKey = TempKey;
         OkGo.<String>get(configUrl)
                 .headers("User-Agent", userAgent)
@@ -225,6 +227,9 @@ public class ApiConfig {
                 });
     }
 
+    public String getApiUrl(){
+        return Hawk.get(HawkConfig.API_URL, "");
+    }
 
     public void loadJar(boolean useCache, String spider, LoadConfigCallback callback) {
         String[] urls = spider.split(";md5;");
@@ -247,10 +252,12 @@ public class ApiConfig {
                 }
             }
         }
-
-        LOG.e("从远程下载jar: " + jarUrl);
         boolean isJarInImg = jarUrl.startsWith("img+");
         jarUrl = jarUrl.replace("img+", "");
+
+        //将相对路径替换为apiUrl前缀
+        jarUrl = replaceUrl(Hawk.get(HawkConfig.API_URL, ""),jarUrl);
+        LOG.e("从远程下载jar: " + jarUrl);
         OkGo.<File>get(jarUrl)
                 .headers("User-Agent", userAgent)
                 .headers("Accept", requestAccept)
@@ -297,11 +304,6 @@ public class ApiConfig {
         });
     }
 
-    public static boolean isBase64(String str) {
-        String base64Pattern = "^(?:[A-Z0-9+/]{4})*(?:[A-Z0-9+/]{2}==|[A-Z0-9+/]{3}=)?$";
-        return str.matches(base64Pattern);
-    }
-
     public static boolean isJSON(String jsonString) {
         try {
             // 尝试解析为 JSONObject 或 JSONArray
@@ -314,6 +316,18 @@ public class ApiConfig {
             }
         }
         return true; // 是有效的 JSON
+    }
+
+    public static String replaceUrl(String apiUrl, String extUrl) {
+        String result = extUrl;
+        if(extUrl.startsWith("./")) {
+            int lastSlashIndex = apiUrl.lastIndexOf('/');
+            if (lastSlashIndex > 0) {
+                apiUrl = apiUrl.substring(0, lastSlashIndex + 1);
+            }
+            result = apiUrl + extUrl.substring(2);
+        }
+        return result;
     }
 
     private void parseJson(String apiUrl, File f) throws Throwable {
@@ -622,9 +636,13 @@ public class ApiConfig {
     }
 
     public Spider getCSP(SourceBean sourceBean) {
-        boolean js = sourceBean.getApi().endsWith(".js") || sourceBean.getApi().contains(".js?");
-        if (js) return jsLoader.getSpider(sourceBean.getKey(), sourceBean.getApi(), sourceBean.getExt(), sourceBean.getJar());
-        return jarLoader.getSpider(sourceBean.getKey(), sourceBean.getApi(), sourceBean.getExt(), sourceBean.getJar());
+        String api = sourceBean.getApi();
+        if(api.startsWith("./")){
+            api = replaceUrl(getApiUrl(),api);
+        }
+        boolean js = api.endsWith(".js") || api.contains(".js?");
+        if (js) return jsLoader.getSpider(sourceBean.getKey(), api, sourceBean.getExt(), sourceBean.getJar());
+        return jarLoader.getSpider(sourceBean.getKey(), api, sourceBean.getExt(), sourceBean.getJar());
     }
 
     public Object[] proxyLocal(Map param) {

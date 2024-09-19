@@ -256,10 +256,6 @@ public class DnsOverHttps implements Dns {
         UnknownHostException unknownHostException = new UnknownHostException(hostname);
         unknownHostException.initCause(failure);
 
-        for (int i = 1; i < failures.size(); i++) {
-            Util.addSuppressedIfPossible(unknownHostException, failures.get(i));
-        }
-
         throw unknownHostException;
     }
 
@@ -285,7 +281,7 @@ public class DnsOverHttps implements Dns {
 
     private List<InetAddress> readResponse(String hostname, Response response) throws Exception {
         if (response.cacheResponse() == null && response.protocol() != Protocol.HTTP_2) {
-            Platform.get().log(Platform.WARN, "Incorrect protocol: " + response.protocol(), null);
+            Platform.get().log("Incorrect protocol: " + response.protocol(),Platform.WARN, null);
         }
 
         try {
@@ -328,8 +324,25 @@ public class DnsOverHttps implements Dns {
         return requestBuilder.build();
     }
 
-    static boolean isPrivateHost(String host) {
-        return PublicSuffixDatabase.get().getEffectiveTldPlusOne(host) == null;
+    public static boolean isPrivateHost(String host) {
+        try {
+            InetAddress address = InetAddress.getByName(host);
+            byte[] ip = address.getAddress();
+
+            // 检查是否是 IPv4
+            if (ip.length == 4) {
+                int firstOctet = ip[0] & 0xFF;
+                int secondOctet = ip[1] & 0xFF;
+
+                // 检查私有 IP 范围
+                return (firstOctet == 10) ||
+                        (firstOctet == 172 && (secondOctet >= 16 && secondOctet <= 31)) ||
+                        (firstOctet == 192 && secondOctet == 168);
+            }
+        } catch (UnknownHostException e) {
+            e.printStackTrace(); // 处理未知主机异常
+        }
+        return false; // 不是私有 IP
     }
 
     public static final class Builder {

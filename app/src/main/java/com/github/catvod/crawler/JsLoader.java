@@ -121,8 +121,11 @@ public class JsLoader {
             classLoader = loadJarInternal(jarUrl, jarMd5, jarKey);
         }
         recentJarKey = key;
-        if (spiders.containsKey(key))
+        if (spiders.containsKey(key)) {
             return spiders.get(key);
+        }
+
+        //js
         try {
             Spider sp = new JsSpider(key, api, classLoader);
             sp.init(App.getInstance(), ext);

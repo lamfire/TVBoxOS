@@ -276,7 +276,7 @@ public class HomeActivity extends BaseActivity {
                         @Override
                         public void run() {
                             if (!useCacheConfig) {
-                                Toast.makeText(HomeActivity.this, msg, Toast.LENGTH_SHORT).show();
+                                LOG.i(msg);
                             }
                             showMainPager();
                         }
@@ -313,12 +313,6 @@ public class HomeActivity extends BaseActivity {
             LOG.e("有:WRITE_EXTERNAL_STORAGE");
         } else {
             LOG.e("无:WRITE_EXTERNAL_STORAGE");
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(HomeActivity.this, "警告:未获得存储权限,请设置.", Toast.LENGTH_SHORT).show();
-                }
-            });
         }
 
         LOG.i("loadConfig");
@@ -341,9 +335,9 @@ public class HomeActivity extends BaseActivity {
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(HomeActivity.this, msg, Toast.LENGTH_SHORT).show();
                         loadJar();
                         //showMainPager();
+                        LOG.i(msg );
                     }
                 }, 50);
             }

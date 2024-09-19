@@ -40,7 +40,7 @@ import okhttp3.Response;
  */
 public final class MyOkhttpDownLoader implements Downloader {
     @VisibleForTesting
-    final Call.Factory client;
+    final OkHttpClient client;
     private final Cache cache;
     private boolean sharedClient = true;
 
@@ -51,14 +51,6 @@ public final class MyOkhttpDownLoader implements Downloader {
     public MyOkhttpDownLoader(OkHttpClient client) {
         this.client = client;
         this.cache = client.cache();
-    }
-
-    /**
-     * Create a new downloader that uses the specified {@link Call.Factory} instance.
-     */
-    public MyOkhttpDownLoader(Call.Factory client) {
-        this.client = client;
-        this.cache = null;
     }
 
     @NonNull
