@@ -591,10 +591,18 @@ public class DetailActivity extends BaseActivity {
     }
 
     private String removeHtmlTag(String info) {
-        // 解析 HTML
-        Document document = Jsoup.parse(info);
-        // 获取纯文本内容
-        return document.body().text();
+        if (info == null){
+            return "";
+        }
+        try {
+            // 解析 HTML
+            Document document = Jsoup.parse(info);
+            // 获取纯文本内容
+            return document.body().text();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return info.replaceAll("<[^>]+>", "");
     }
 
     private void initViewModel() {
