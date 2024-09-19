@@ -509,9 +509,9 @@ public class PlayFragment extends BaseLazyFragment {
 
     void playUrl(String url, HashMap<String, String> headers) {
         LOG.i("playUrl:" + url);
-        if(autoRetryCount>0 && url.contains(".m3u8")){
-            url="http://home.jundie.top:666/unBom.php?m3u8="+url;//尝试去bom头再次播放
-        }
+//        if(autoRetryCount>0 && url.contains(".m3u8")){
+//            url="http://home.jundie.top:666/unBom.php?m3u8="+url;//尝试去bom头再次播放
+//        }
         if (mActivity == null) return;
         if (!isAdded()) return;
         final String finalUrl = url;
