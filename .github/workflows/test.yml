@@ -20,7 +20,7 @@ jobs:
       - name: Get version
         id: get_version
         run: |
-           VERSION=$(git describe --tags --always)
+           VERSION=$(git rev-parse --short HEAD)
            echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
       - name: Build With Gradle
         run: |
@@ -40,7 +40,7 @@ jobs:
       - name: Create Release
         uses: actions/create-release@v1
         with:
-          tag_name: ${{ github.ref_name }}-${{ steps.get_version.outputs.VERSION }}
+          tag_name: ${{ steps.get_version.outputs.VERSION }}
           release_name: Release ${{ steps.get_version.outputs.VERSION }}
           draft: false
           prerelease: false
