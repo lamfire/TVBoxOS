@@ -31,6 +31,7 @@ import com.lzy.okgo.callback.AbsCallback;
 import com.lzy.okgo.model.Response;
 import com.orhanobut.hawk.Hawk;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -296,6 +297,25 @@ public class ApiConfig {
         });
     }
 
+    public static boolean isBase64(String str) {
+        String base64Pattern = "^(?:[A-Z0-9+/]{4})*(?:[A-Z0-9+/]{2}==|[A-Z0-9+/]{3}=)?$";
+        return str.matches(base64Pattern);
+    }
+
+    public static boolean isJSON(String jsonString) {
+        try {
+            // 尝试解析为 JSONObject 或 JSONArray
+            new JSONObject(jsonString);
+        } catch (Exception e) {
+            try {
+                new JSONArray(jsonString);
+            } catch (Exception ex) {
+                return false; // 既不是 JSONObject 也不是 JSONArray
+            }
+        }
+        return true; // 是有效的 JSON
+    }
+
     private void parseJson(String apiUrl, File f) throws Throwable {
         LOG.e("从本地缓存加载" + f.getAbsolutePath());
         BufferedReader bReader = new BufferedReader(new InputStreamReader(new FileInputStream(f), "UTF-8"));
@@ -309,6 +329,20 @@ public class ApiConfig {
     }
 
     private void parseJson(String apiUrl, String jsonStr) {
+        //如果是base64内容，解码
+        if(isJSON(jsonStr)){
+            LOG.e("发现JSON配置源,无需特殊处理." );
+        }else{
+            LOG.e("发现非JSON配置源，解码中..." );
+            // 尝试解码Base64
+            try {
+                byte[] decodedBytes = Base64.decode(jsonStr, Base64.DEFAULT);
+                jsonStr = new String(decodedBytes);
+            }catch (Exception e){
+                LOG.e("Base64解码失败..." );
+            }
+        }
+
         JsonObject infoJson = new Gson().fromJson(jsonStr, JsonObject.class);
         // spider
         spider = DefaultConfig.safeJsonString(infoJson, "spider", "");
