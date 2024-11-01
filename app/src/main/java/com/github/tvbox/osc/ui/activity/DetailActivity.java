@@ -598,7 +598,7 @@ public class DetailActivity extends BaseActivity {
             // 解析 HTML
             Document document = Jsoup.parse(info);
             // 获取纯文本内容
-            return document.body().text();
+            info = document.body().text();
         }catch (Throwable e){
             e.printStackTrace();
         }
