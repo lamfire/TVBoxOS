@@ -145,7 +145,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
-                    android:singleLine="true"
+                    android:lineSpacingMultiplier="1.2"
+                    android:maxLines="2"
                     android:textColor="@color/color_CCFFFFFF"
                     android:textSize="@dimen/ts_16" />
 

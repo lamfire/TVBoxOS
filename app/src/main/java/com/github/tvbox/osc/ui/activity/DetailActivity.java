@@ -602,6 +602,7 @@ public class DetailActivity extends BaseActivity {
         }catch (Throwable e){
             e.printStackTrace();
         }
+        info =  info.replaceAll("＜[^>]+＞", "");
         return info.replaceAll("<[^>]+>", "");
     }
 
@@ -637,6 +638,7 @@ public class DetailActivity extends BaseActivity {
                     }
                     setTextShow(tvActor, "演员：", mVideo.actor);
                     setTextShow(tvDirector, "导演：", mVideo.director);
+
                     setTextShow(tvDes, "内容简介：", removeHtmlTag(mVideo.des));
                     if (!TextUtils.isEmpty(mVideo.pic)) {
                         Picasso.get()
