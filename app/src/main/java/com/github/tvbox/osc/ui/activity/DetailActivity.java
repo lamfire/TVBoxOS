@@ -587,10 +587,10 @@ public class DetailActivity extends BaseActivity {
             return;
         }
         view.setVisibility(View.VISIBLE);
-        view.setText(Html.fromHtml(getHtml(tag, info)));
+        view.setText(tag + clearHtmlTag(info));
     }
 
-    private String removeHtmlTag(String info) {
+    private String clearHtmlTag(String info) {
         if (info == null){
             return "";
         }
@@ -603,7 +603,9 @@ public class DetailActivity extends BaseActivity {
             e.printStackTrace();
         }
         info =  info.replaceAll("＜[^>]+＞", "");
-        return info.replaceAll("<[^>]+>", "");
+        info =  info.replaceAll("&lt;[^>]+&gt;", "");
+        info =  info.replaceAll("<[^>]+>", "");
+        return info.trim();
     }
 
     private void initViewModel() {
@@ -639,7 +641,7 @@ public class DetailActivity extends BaseActivity {
                     setTextShow(tvActor, "演员：", mVideo.actor);
                     setTextShow(tvDirector, "导演：", mVideo.director);
 
-                    setTextShow(tvDes, "内容简介：", removeHtmlTag(mVideo.des));
+                    setTextShow(tvDes, "简介：", mVideo.des);
                     if (!TextUtils.isEmpty(mVideo.pic)) {
                         Picasso.get()
                                 .load(DefaultConfig.checkReplaceProxy(mVideo.pic))
