@@ -602,8 +602,8 @@ public class DetailActivity extends BaseActivity {
         }catch (Throwable e){
             e.printStackTrace();
         }
-        info =  info.replaceAll("＜[^>]+＞", "");
-        info =  info.replaceAll("&lt;[^>]+&gt;", "");
+        info =  info.replaceAll("<.*?>", "");
+        info =  info.replaceAll("&lt;.*?&gt;", "");
         info =  info.replaceAll("<[^>]+>", "");
         return info.trim();
     }
